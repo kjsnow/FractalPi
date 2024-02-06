@@ -1,7 +1,9 @@
 from mandelbrot import Mandelbrot
 from PIL import Image as im
 import numpy as np
+import glob
 import sys
+import time
 
 # Set to the name of your e-ink device (https://github.com/robweber/omni-epd#displays-implemented)
 DISPLAY_TYPE = "waveshare_epd.epd7in5_V2"
@@ -31,22 +33,32 @@ if not DEBUG:
     epd.clear()
     epd.sleep()
 
+render_iteration = 0
 while True:
-    print("Starting render...")
-    mandelbrot.render(WIDTH,HEIGHT)
-    print("Done!")
-    arr = mandelbrot.get_render()
-    arr = (np.asarray(arr)*255).astype(np.uint8)
-    image = im.fromarray(arr)
-    # Save the image as BMP
-    image = image.convert("1")
+    # print(f"Starting render {render_iteration}...")
+    # mandelbrot.render(WIDTH,HEIGHT)
+    # print("Done!")
+    # arr = mandelbrot.get_render()
+    # arr = (np.asarray(arr)*255).astype(np.uint8)
+    # image = im.fromarray(arr)
+    # # Save the image as BMP
+    # image = image.convert("1")
+    #
+    # # Save to results
+    # image.save(f"./renders/render_{render_iteration}.jpg")
+    #
+    # if DEBUG:
+    #     image.show()
+    # else:
+    #     epd.prepare()
+    #     epd.clear()
+    #     epd.display(image)
+    #     epd.sleep()
+    #
+    # mandelbrot.zoom_on_interesting_area()
+    # render_iteration += 1
 
-    if DEBUG:
-        image.show()
-    else:
-        epd.prepare()
-        epd.clear()
-        epd.display(image)
-        epd.sleep()
-
-    mandelbrot.zoom_on_interesting_area()
+    for file in sorted(glob.glob("renders/*.jpg")):
+        with im.open(file) as image:
+            image.show()
+            time.sleep(10)
