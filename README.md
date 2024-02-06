@@ -2,6 +2,8 @@
 
 To run the script, first wire up the Raspberry Pi with an e-Ink panel.
 
+Make sure to enable [SPI Interface](https://www.raspberrypi-spy.co.uk/2014/08/enabling-the-spi-interface-on-the-raspberry-pi/)
+
 Install the needed Python requirements with:
 
 ```
