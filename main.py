@@ -51,6 +51,7 @@ def display_image(epd, image, debug=False):
 def display_renders(epd, debug=False, sleep=10):
     for file in sorted(glob.glob("renders/*.jpg")):
         with im.open(file) as image:
+            image = image.convert("1")
             display_image(epd, image, debug)
             time.sleep(sleep)
 
@@ -69,16 +70,17 @@ def render_images():
         # Save to results
         image.save(f"./renders/render_{render_iteration}.jpg")
 
-        if DEBUG:
-            image.show()
-        else:
-            epd.prepare()
-            epd.clear()
-            epd.display(image)
-            epd.sleep()
+        # if DEBUG:
+        #     image.show()
+        # else:
+        #     epd.prepare()
+        #     epd.clear()
+        #     epd.display(image)
+        #     epd.sleep()
+        display_image(epd, image, debug)
 
         mandelbrot.zoom_on_interesting_area()
-        render_iteration += 1
+        # render_iteration += 1
 
 
 if __name__ == "__main__":
