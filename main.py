@@ -9,7 +9,7 @@ import time
 DISPLAY_TYPE = "waveshare_epd.epd7in5_V2"
 
 # Disable when running the waveshare panel
-DEBUG = False
+DEBUG = True
 
 if not DEBUG:
     from omni_epd import displayfactory, EPDNotFoundError
@@ -19,46 +19,70 @@ mandelbrot = Mandelbrot()
 # default height and width - need to hardcode for debug mode
 WIDTH = 800
 HEIGHT = 480
-if not DEBUG:
-    try:
-        epd = displayfactory.load_display_driver(DISPLAY_TYPE)
-    except EPDNotFoundError:
-        print(f"Couldn't find {DISPLAY_TYPE}")
-        sys.exit()
 
-    WIDTH = epd.width
-    HEIGHT = epd.height
 
-    epd.prepare()
-    epd.clear()
-    epd.sleep()
+def prepare_display(width=800, height=480, debug=False):
+    if not debug:
+        try:
+            epd = displayfactory.load_display_driver(DISPLAY_TYPE)
+        except EPDNotFoundError:
+            print(f"Couldn't find {DISPLAY_TYPE}")
+            sys.exit()
 
-render_iteration = 0
-while True:
-    # print(f"Starting render {render_iteration}...")
-    # mandelbrot.render(WIDTH,HEIGHT)
-    # print("Done!")
-    # arr = mandelbrot.get_render()
-    # arr = (np.asarray(arr)*255).astype(np.uint8)
-    # image = im.fromarray(arr)
-    # # Save the image as BMP
-    # image = image.convert("1")
-    #
-    # # Save to results
-    # image.save(f"./renders/render_{render_iteration}.jpg")
-    #
-    # if DEBUG:
-    #     image.show()
-    # else:
-    #     epd.prepare()
-    #     epd.clear()
-    #     epd.display(image)
-    #     epd.sleep()
-    #
-    # mandelbrot.zoom_on_interesting_area()
-    # render_iteration += 1
+        width = epd.width
+        height = epd.height
 
+        epd.prepare()
+        epd.clear()
+        epd.sleep()
+
+
+def display_image(image, debug=False):
+    if debug:
+        image.show()
+    else:
+        epd.prepare()
+        epd.clear()
+        epd.display(image)
+        epd.sleep()
+
+
+def display_renders(debug=False, sleep=10):
     for file in sorted(glob.glob("renders/*.jpg")):
         with im.open(file) as image:
+            display_image(image, debug)
+            time.sleep(sleep)
+
+
+def render_images():
+    for render_iteration in range(0,9):
+        print(f"Starting render {render_iteration}...")
+        mandelbrot.render(WIDTH,HEIGHT)
+        print("Done!")
+        arr = mandelbrot.get_render()
+        arr = (np.asarray(arr)*255).astype(np.uint8)
+        image = im.fromarray(arr)
+        # Save the image as BMP
+        image = image.convert("1")
+
+        # Save to results
+        image.save(f"./renders/render_{render_iteration}.jpg")
+
+        if DEBUG:
             image.show()
-            time.sleep(10)
+        else:
+            epd.prepare()
+            epd.clear()
+            epd.display(image)
+            epd.sleep()
+
+        mandelbrot.zoom_on_interesting_area()
+        render_iteration += 1
+
+
+if __name__ == "__main__":
+    prepare_display(width=WIDTH, height=HEIGHT, debug=DEBUG)
+
+    # render_iteration = 0
+    while True:
+        display_renders(DEBUG, 10)
