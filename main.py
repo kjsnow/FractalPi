@@ -55,10 +55,12 @@ def display_renders(epd, debug=False, sleep=10):
             time.sleep(sleep)
 
 
-def render_images():
-    for render_iteration in range(0,9):
+def render_images(epd, debug=False, save_render=False):
+    render_iteration = 0
+    while True:
+    # for render_iteration in range(0, 10):
         print(f"Starting render {render_iteration}...")
-        mandelbrot.render(WIDTH,HEIGHT)
+        mandelbrot.render(WIDTH, HEIGHT)
         print("Done!")
         arr = mandelbrot.get_render()
         arr = (np.asarray(arr)*255).astype(np.uint8)
@@ -66,25 +68,18 @@ def render_images():
         # Save the image as BMP
         image = image.convert("1")
 
-        # Save to results
-        image.save(f"./renders/render_{render_iteration}.jpg")
+        if save_render:
+            # Save to results
+            image.save(f"./renders/render_{render_iteration}.jpg")
 
-        # if DEBUG:
-        #     image.show()
-        # else:
-        #     epd.prepare()
-        #     epd.clear()
-        #     epd.display(image)
-        #     epd.sleep()
         display_image(epd, image, debug)
 
         mandelbrot.zoom_on_interesting_area()
-        # render_iteration += 1
+        render_iteration += 1
 
 
 if __name__ == "__main__":
     epd = prepare_display(width=WIDTH, height=HEIGHT, debug=DEBUG)
 
-    # render_iteration = 0
-    while True:
-        display_renders(epd, DEBUG, 10)
+    render_images(epd, debug=DEBUG, save_render=False)
+    # display_renders(epd, DEBUG, 10)
