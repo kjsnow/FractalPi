@@ -42,7 +42,7 @@ def display_image(epd, image, debug=False):
     if debug:
         image.show()
     else:
-        epd.prepare()
+        # epd.prepare()
         epd.clear()
         epd.display(image)
         epd.sleep()
@@ -51,7 +51,6 @@ def display_image(epd, image, debug=False):
 def display_renders(epd, debug=False, sleep=10):
     for file in sorted(glob.glob("renders/*.jpg")):
         with im.open(file) as image:
-            image = image.convert("1")
             display_image(epd, image, debug)
             time.sleep(sleep)
 
