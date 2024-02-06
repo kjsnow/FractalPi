@@ -42,7 +42,7 @@ def display_image(epd, image, debug=False):
     if debug:
         image.show()
     else:
-        # epd.prepare()
+        epd.prepare()
         epd.clear()
         epd.display(image)
         epd.sleep()
