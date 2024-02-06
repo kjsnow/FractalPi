@@ -1,4 +1,4 @@
-# PiArtFrame
+# FractalPi
 
 To run the script, first wire up the Raspberry Pi with an e-Ink panel.
 
