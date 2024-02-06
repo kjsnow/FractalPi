@@ -35,9 +35,10 @@ def prepare_display(width=800, height=480, debug=False):
         epd.prepare()
         epd.clear()
         epd.sleep()
+        return epd
 
 
-def display_image(image, debug=False):
+def display_image(epd, image, debug=False):
     if debug:
         image.show()
     else:
@@ -47,10 +48,10 @@ def display_image(image, debug=False):
         epd.sleep()
 
 
-def display_renders(debug=False, sleep=10):
+def display_renders(epd, debug=False, sleep=10):
     for file in sorted(glob.glob("renders/*.jpg")):
         with im.open(file) as image:
-            display_image(image, debug)
+            display_image(epd, image, debug)
             time.sleep(sleep)
 
 
@@ -81,8 +82,8 @@ def render_images():
 
 
 if __name__ == "__main__":
-    prepare_display(width=WIDTH, height=HEIGHT, debug=DEBUG)
+    epd = prepare_display(width=WIDTH, height=HEIGHT, debug=DEBUG)
 
     # render_iteration = 0
     while True:
-        display_renders(DEBUG, 10)
+        display_renders(epd, DEBUG, 10)
